@@ -5,14 +5,17 @@ import earthFragmentShader from "../_shaders/earth/fragment.glsl";
 import atmosphereVertexShader from "../_shaders/atmosphere/vertex.glsl";
 import atmosphereFragmentShader from "../_shaders/atmosphere/fragment.glsl";
 import { useEffect, useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 
 const Earth = ({
 	atmosphereDayColor = "#00aaff",
 	atmosphereTwilightColor = "#ff6600",
 	phi = 0,
 	theta = 0,
+	cloudStrength = 0.5,
+	rotate = true,
 }) => {
+	const { gl: renderer } = useThree();
 	const atmosphereMaterial = useRef<THREE.ShaderMaterial>(null);
 
 	const earthRef = useRef<THREE.Group>(null);
@@ -27,7 +30,7 @@ const Earth = ({
 	earthDayTexture.anisotropy =
 		earthNightTexture.anisotropy =
 		earthSpecularCloudsTexture.anisotropy =
-			8;
+			renderer.capabilities.getMaxAnisotropy();
 
 	const earthUniforms = useRef({
 		uDayTexture: { value: earthDayTexture },
@@ -37,6 +40,9 @@ const Earth = ({
 		uAtmosphereDayColor: { value: new THREE.Color(atmosphereDayColor) },
 		uAtmosphereTwilightColor: {
 			value: new THREE.Color(atmosphereTwilightColor),
+		},
+		uCloudStrength: {
+			value: parseFloat(cloudStrength.toString()),
 		},
 	});
 
@@ -72,10 +78,16 @@ const Earth = ({
 		);
 	}, [phi, theta]);
 
-	useFrame(({ clock }) => {
+	useEffect(() => {
+		earthUniforms.current.uCloudStrength.value = parseFloat(
+			cloudStrength.toString()
+		);
+	}, [cloudStrength]);
+
+	useFrame((state, delta) => {
 		const earth = earthRef.current;
-		if (earth) {
-			earth.rotation.y = clock.getElapsedTime() / 10;
+		if (earth && rotate) {
+			earth.rotation.y += delta / 8;
 		}
 	});
 
@@ -102,4 +114,5 @@ const Earth = ({
 		</group>
 	);
 };
+			
 export default Earth;

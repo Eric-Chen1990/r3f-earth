@@ -4,6 +4,7 @@ uniform sampler2D uSpecularCloudsTexture;
 uniform vec3 uSunDirection;
 uniform vec3 uAtmosphereDayColor;
 uniform vec3 uAtmosphereTwilightColor;
+uniform float uCloudStrength;
 
 varying vec2 vUv;
 varying vec3 vNormal;
@@ -28,7 +29,7 @@ void main()
     vec2 specularCloudsColor = texture(uSpecularCloudsTexture, vUv).rg;
 
     // Clouds
-    float cloudsMix = smoothstep(0.5, 1.0, specularCloudsColor.g);
+    float cloudsMix = smoothstep(1.0-uCloudStrength, 1.0, specularCloudsColor.g);
     cloudsMix *= dayMix;
     color = mix(color, vec3(1.0), cloudsMix);
 
