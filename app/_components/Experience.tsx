@@ -19,13 +19,13 @@ const Experience = () => {
 		const { phi, theta } = useControls("Sun spherical", {
 			phi: {
 				value: 0,
-				min: 0,
-				max: Math.PI,
+				min: -90,
+				max: 90,
 			},
 			theta: {
 				value: 0,
-				min: -Math.PI,
-				max: Math.PI,
+				min: -180,
+				max: 180,
 			},
 		});
 		const { enable } = useControls("Skybox", {

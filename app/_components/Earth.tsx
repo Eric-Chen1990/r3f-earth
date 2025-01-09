@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import { extend, ThreeElements, useFrame, useThree } from "@react-three/fiber";
 import { EarthMaterial } from "./earthMaterial";
 import { AtmosphereMaterial } from "./atmosphereMaterial";
+import { degreesToRadians } from "@/src/utils/math";
 
 // declaratively
 extend({ EarthMaterial });
@@ -21,9 +22,9 @@ const Earth = ({
 }) => {
 	const initConfig = {
 		uSunDirection: new THREE.Vector3(
-			Math.cos(phi) * Math.cos(theta),
-			Math.sin(phi),
-			Math.cos(phi) * Math.sin(theta)
+			Math.cos(degreesToRadians(phi)) * Math.cos(degreesToRadians(theta)),
+			Math.sin(degreesToRadians(phi)),
+			Math.cos(degreesToRadians(phi)) * Math.sin(degreesToRadians(theta))
 		),
 		uAtmosphereDayColor: new THREE.Color(atmosphereDayColor),
 		uAtmosphereTwilightColor: new THREE.Color(atmosphereTwilightColor),
